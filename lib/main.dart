@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:provider_example/state/theme_state.dart';
+import 'package:provider_example/state/app_state.dart';
 
 void main() => runApp(Root());
 
 class Root extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ThemeState>(
-      builder: (context) => ThemeState(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ThemeState>.value(
+          notifier: ThemeState(),
+        ),
+        ChangeNotifierProvider<AppState>.value(
+          notifier: AppState(),
+        ),
+      ],
       child: MyApp(),
     );
   }
