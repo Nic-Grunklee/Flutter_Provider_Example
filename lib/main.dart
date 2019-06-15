@@ -83,7 +83,16 @@ class MyHomePage extends StatelessWidget {
                   state.stories.map((story) => _buildTile(story)).toList(),
             ),
       ),
-      bottomNavigationBar: BottomAppBar(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: Provider.of<AppState>(context).bottomIndex,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.new_releases), title: Text("New Stories"),),
+          BottomNavigationBarItem(icon: Icon(Icons.arrow_upward), title: Text("Top Stories"),),
+        ],
+        onTap: (index) {
+          Provider.of<AppState>(context).changeStoryType(index);
+        },
+      ),
     );
   }
 
