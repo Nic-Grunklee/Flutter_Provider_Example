@@ -11,5 +11,5 @@ part 'serializers.g.dart';
 ])
 Serializers serializers = _$serializers;
 
-Serializers standardSerializers = 
-(serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+Serializers standardSerializers =
+    (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();

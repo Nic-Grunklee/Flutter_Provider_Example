@@ -8,6 +8,7 @@ part 'stories.g.dart';
 
 abstract class Stories implements Built<Stories, StoriesBuilder> {
   int get id;
+
   @nullable
   bool get deleted;
   String get type;
@@ -30,15 +31,16 @@ abstract class Stories implements Built<Stories, StoriesBuilder> {
   @nullable
   int get descendants;
 
-  //Private constructor
   Stories._();
 
   factory Stories([updates(StoriesBuilder b)]) = _$Stories;
   static Serializer<Stories> get serializer => _$storiesSerializer;
 }
 
-Stories parsedStories(String jsonString) {
+Stories parseStories(String jsonString) {
   final parsed = jsonDecode(jsonString);
-  Stories stories = standardSerializers.deserializeWith(Stories.serializer, parsed);
+  Stories stories =
+      standardSerializers.deserializeWith(Stories.serializer, parsed);
+
   return stories;
 }

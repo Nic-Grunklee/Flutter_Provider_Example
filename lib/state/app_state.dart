@@ -6,7 +6,10 @@ import 'package:http/http.dart' as http;
 
 import 'package:provider_example/models/stories.dart';
 
-enum StoryType { TopStories, NewStories }
+enum StoryType {
+  TopStories,
+  NewStories,
+}
 
 class AppState with ChangeNotifier {
   List _topStoryIds = [];
@@ -17,10 +20,9 @@ class AppState with ChangeNotifier {
 
   int _bottomIndex = 0;
 
-  //HashMap that saves all the stories so we don't fetch them everytime
   var _cache = HashMap<int, Stories>();
 
-  final String baseUrl = 'https://hacker-news.firebaseio.com/v0/';
+  final String baseUrl = "https://hacker-news.firebaseio.com/v0/";
 
   bool _topIsLoading = true;
   bool _newIsLoading = true;
@@ -36,13 +38,17 @@ class AppState with ChangeNotifier {
   }
 
   List<Stories> get stories {
-    if (_storyType == StoryType.NewStories) return _newStories;
-    else return _topStories;
+    if (_storyType == StoryType.NewStories)
+      return _newStories;
+    else
+      return _topStories;
   }
 
   bool get isLoading {
-    if (_storyType == StoryType.NewStories) return _newIsLoading;
-    else return _topIsLoading;
+    if (_storyType == StoryType.NewStories)
+      return _newIsLoading;
+    else
+      return _topIsLoading;
   }
 
   List<Stories> get allStories {
@@ -61,32 +67,32 @@ class AppState with ChangeNotifier {
       _bottomIndex = 0;
     } else {
       _storyType = StoryType.TopStories;
-      _bottomIndex = 0;
+      _bottomIndex = 1;
     }
     _updateStories(_storyType);
     notifyListeners();
   }
 
   Future<List> initStories(StoryType type) async {
-    String frontUrl = type == StoryType.NewStories ? 'new' : 'top';
-    String url = '$baseUrl${frontUrl}stories.json';
+    String frontUrl = type == StoryType.NewStories ? "new" : "top";
+    String url = "$baseUrl${frontUrl}stories.json";
 
     final res = await http.get(url);
 
-    if (res.statusCode != 200) throw 'Couldnt fetch stories';
+    if (res.statusCode != 200) throw "Couldn't fetch stories";
 
     return jsonDecode(res.body);
   }
 
-  Future<Stories> _getStory(int id) async {
+  Future<Stories> _getStory(var id) async {
     if (!_cache.containsKey(id)) {
-      final url = '${baseUrl}item/$id.json';
+      final url = "${baseUrl}item/$id.json";
       final res = await http.get(url);
 
       if (res.statusCode != 200)
-        throw 'Couldnt fetch $id story';
+        throw "Couldn't fetch $id story";
       else
-        _cache[id] = parsedStories(res.body);
+        _cache[id] = parseStories(res.body);
     }
 
     return _cache[id];
@@ -100,19 +106,23 @@ class AppState with ChangeNotifier {
 
     if (fetch) {
       var storyIds = await initStories(type);
-      type == StoryType.NewStories ? _newStoryIds = storyIds : _topStoryIds = storyIds;
+      type == StoryType.NewStories
+          ? _newStoryIds = storyIds
+          : _topStoryIds = storyIds;
 
       for (var id in storyIds) {
         Stories newStory = await _getStory(id);
-        type == StoryType.NewStories ? _newStories.add(newStory) : _topStories.add(newStory);
+        type == StoryType.NewStories
+            ? _newStories.add(newStory)
+            : _topStories.add(newStory);
 
-        //Notify listeners every 2 stories
-        if(storyIds.indexOf(id) > 2) notifyListeners();
-        //Stop getting stories after 15
-        if(storyIds.indexOf(id) > 15) break;
+        if (storyIds.indexOf(id) > 2) notifyListeners();
+        if (storyIds.indexOf(id) > 15) break;
       }
 
-      type == StoryType.NewStories ? _newIsLoading = false : _topIsLoading = false;
+      type == StoryType.NewStories
+          ? _newIsLoading = false
+          : _topIsLoading = false;
       notifyListeners();
     }
   }
