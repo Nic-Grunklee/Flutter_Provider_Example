@@ -1,6 +1,6 @@
 # provider_example
 
-A new Flutter project.
+Flutter using provider and HTTP based on [this](https://youtu.be/azaFOc5ymtA) tutorial 
 
 ## Getting Started
 
