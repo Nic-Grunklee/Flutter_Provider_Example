@@ -86,8 +86,14 @@ class MyHomePage extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: Provider.of<AppState>(context).bottomIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.new_releases), title: Text("New Stories"),),
-          BottomNavigationBarItem(icon: Icon(Icons.arrow_upward), title: Text("Top Stories"),),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.new_releases),
+            title: Text("New Stories"),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.arrow_upward),
+            title: Text("Top Stories"),
+          ),
         ],
         onTap: (index) {
           Provider.of<AppState>(context).changeStoryType(index);
@@ -125,25 +131,78 @@ class MyHomePage extends StatelessWidget {
 class StorySearch extends SearchDelegate {
   @override
   List<Widget> buildActions(BuildContext context) {
-    // TODO: implement buildActions
-    return null;
+    // empties query, then returns a blank container
+    return query.isNotEmpty
+        ? [
+            IconButton(
+              icon: Icon(Icons.cancel),
+              onPressed: () {
+                query = '';
+              },
+            )
+          ]
+        : [Container()];
   }
 
   @override
   Widget buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
-    return null;
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
-    return null;
+    List<Stories> _storyList = Provider.of<AppState>(context)
+        .allStories
+        .where((story) => story.title.toLowerCase().contains(query))
+        .toList();
+
+    if (_storyList.isEmpty)
+      return Center(
+        child: Text("No Results"),
+      );
+    return ListView(
+        children: _storyList
+            .map(
+              (story) => ListTile(
+                    title: Text('${story.title}'),
+                    onTap: () async {
+                      if (await canLaunch(story.url)) {
+                        launch(story.url);
+                      }
+                    },
+                  ),
+            )
+            .toList());
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
-    return null;
+    List<Stories> _storyList = Provider.of<AppState>(context)
+        .allStories
+        .where((story) => story.title.toLowerCase().contains(query))
+        .toList();
+
+    if (_storyList.isEmpty)
+      return Center(
+        child: Text("No Results"),
+      );
+    return ListView(
+        children: _storyList
+            .map(
+              (story) => ListTile(
+                    title: Text('${story.title}'),
+                    onTap: () async {
+                      if (await canLaunch(story.url)) {
+                        launch(story.url);
+                      }
+                    },
+                  ),
+            )
+            .toList());
   }
 }

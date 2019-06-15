@@ -6,7 +6,7 @@ class ThemeState extends ChangeNotifier {
     primaryColor: Color(0xFFF6F6EF), //#F6F6EF Add 0xFF in front of hex
     canvasColor: Color(0xFFFF6600),
     accentColor: Color(0xFF843C0B),
-    scaffoldBackgroundColor: Color(0xFFF6F6EF).withOpacity(0.6),
+    scaffoldBackgroundColor: Color(0xFFF6F6EF).withOpacity(0.9),
   );
 
   ThemeData _themeData;
